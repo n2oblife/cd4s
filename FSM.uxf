@@ -1,0 +1,588 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="15.1">
+  <zoom_level>8</zoom_level>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>312</x>
+      <y>0</y>
+      <w>168</w>
+      <h>104</h>
+    </coordinates>
+    <panel_attributes>lt=.
+Idle
+--
+input_queue_next 	= 0
+output_queue_write = 0
+valid 					= 0
+ready 					= 0
+operation 			= NOP
+round 					= 0</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>312</x>
+      <y>896</y>
+      <w>168</w>
+      <h>104</h>
+    </coordinates>
+    <panel_attributes>AD_do
+--
+input_queue_next 	= 0
+output_queue_write = 0
+valid 					= 0
+ready 					= 0
+operation 			= applyAD
+round 					= 0</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>392</x>
+      <y>96</y>
+      <w>64</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;-
+start = 1</panel_attributes>
+    <additional_attributes>10.0;70.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>312</x>
+      <y>152</y>
+      <w>168</w>
+      <h>104</h>
+    </coordinates>
+    <panel_attributes>Init_wait
+--
+input_queue_next 	= 1
+output_queue_write = 0
+valid 					= 0
+ready 					= 0
+operation 			= NOP
+round 					= 0</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>384</x>
+      <y>248</y>
+      <w>184</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;-
+input_queue_blocktype = Nonce</panel_attributes>
+    <additional_attributes>10.0;70.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>312</x>
+      <y>448</y>
+      <w>168</w>
+      <h>104</h>
+    </coordinates>
+    <panel_attributes>process_a
+--
+input_queue_next 	= 0
+output_queue_write = 0
+valid 					= 0
+ready 					= 0
+operation 			= applyRound
+round 					+= 1</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>384</x>
+      <y>400</y>
+      <w>24</w>
+      <h>64</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;-
+</panel_attributes>
+    <additional_attributes>10.0;60.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>472</x>
+      <y>472</y>
+      <w>88</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;-
+a times
+</panel_attributes>
+    <additional_attributes>10.0;70.0;50.0;70.0;50.0;10.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>312</x>
+      <y>304</y>
+      <w>168</w>
+      <h>104</h>
+    </coordinates>
+    <panel_attributes>Init_process
+--
+input_queue_next 	= 0
+output_queue_write = 0
+valid 					= 0
+ready 					= 0
+operation 			= Init
+round 					= 0</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>384</x>
+      <y>544</y>
+      <w>80</w>
+      <h>64</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;-
+round = a-1</panel_attributes>
+    <additional_attributes>10.0;60.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>312</x>
+      <y>592</y>
+      <w>168</w>
+      <h>104</h>
+    </coordinates>
+    <panel_attributes>Init_key
+--
+input_queue_next 	= 0
+output_queue_write = 0
+valid 					= 0
+ready 					= 0
+operation 			= applyKeyI
+round 					= 0</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>768</x>
+      <y>40</y>
+      <w>168</w>
+      <h>104</h>
+    </coordinates>
+    <panel_attributes>template
+--
+input_queue_next 	= 1
+output_queue_write = 0
+valid 					= 0
+ready 					= 0
+operation 			= NOP
+round 					= 0</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>384</x>
+      <y>688</y>
+      <w>24</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;70.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>544</x>
+      <y>896</y>
+      <w>168</w>
+      <h>104</h>
+    </coordinates>
+    <panel_attributes>AD_process_b
+--
+input_queue_next 	= 0
+output_queue_write = 0
+valid 					= 0
+ready 					= 0
+operation 			= applyRound
+round 					+= 1</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>704</x>
+      <y>920</y>
+      <w>88</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;-
+b times
+</panel_attributes>
+    <additional_attributes>10.0;70.0;50.0;70.0;50.0;10.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>472</x>
+      <y>784</y>
+      <w>168</w>
+      <h>128</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;-
+round = b-1</panel_attributes>
+    <additional_attributes>10.0;20.0;190.0;20.0;190.0;140.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>472</x>
+      <y>920</y>
+      <w>88</w>
+      <h>24</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>90.0;10.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>312</x>
+      <y>744</y>
+      <w>168</w>
+      <h>104</h>
+    </coordinates>
+    <panel_attributes>AD_wait
+--
+input_queue_next 	= 1
+output_queue_write = 0
+valid 					= 0
+ready 					= 0
+operation 			= NOP
+round 					= 0</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>384</x>
+      <y>840</y>
+      <w>184</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;-
+input_queue_blocktype = AData</panel_attributes>
+    <additional_attributes>10.0;70.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLPackage</id>
+    <coordinates>
+      <x>568</x>
+      <y>16</y>
+      <w>112</w>
+      <h>80</h>
+    </coordinates>
+    <panel_attributes>Generics 
+--
+a = 12
+b = 8
+s = ...
+t = ...</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>96</x>
+      <y>784</y>
+      <w>232</w>
+      <h>128</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;-
+input_queue_blocktype = Message</panel_attributes>
+    <additional_attributes>70.0;140.0;70.0;20.0;270.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>72</x>
+      <y>896</y>
+      <w>168</w>
+      <h>104</h>
+    </coordinates>
+    <panel_attributes>AD_finish
+--
+input_queue_next 	= 0
+output_queue_write = 0
+valid 					= 0
+ready 					= 0
+operation 			= applyOne
+round 					= 0</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>72</x>
+      <y>1048</y>
+      <w>168</w>
+      <h>104</h>
+    </coordinates>
+    <panel_attributes>Dec_do
+--
+input_queue_next 	= 0
+output_queue_write = 1
+valid 					= 0
+ready 					= 0
+operation 			= applyDec
+round 					= 0</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>152</x>
+      <y>992</y>
+      <w>24</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;70.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>232</x>
+      <y>1200</y>
+      <w>104</w>
+      <h>32</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;-
+round = b-1</panel_attributes>
+    <additional_attributes>110.0;20.0;10.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>72</x>
+      <y>1200</y>
+      <w>168</w>
+      <h>104</h>
+    </coordinates>
+    <panel_attributes>Dec_process_b
+--
+input_queue_next 	= 0
+output_queue_write = 0
+valid 					= 0
+ready 					= 0
+operation 			= applyRound
+round 					+= 1</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>144</x>
+      <y>1144</y>
+      <w>24</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;70.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>232</x>
+      <y>1224</y>
+      <w>88</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;-
+b times
+</panel_attributes>
+    <additional_attributes>10.0;70.0;50.0;70.0;50.0;10.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>320</x>
+      <y>1200</y>
+      <w>168</w>
+      <h>104</h>
+    </coordinates>
+    <panel_attributes>Dec_wait
+--
+input_queue_next 	= 1
+output_queue_write = 0
+valid 					= 0
+ready 					= 0
+operation 			= NOP
+round 					= 0</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>232</x>
+      <y>1080</y>
+      <w>208</w>
+      <h>136</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;-
+input_queue_blocktype = Message</panel_attributes>
+    <additional_attributes>10.0;20.0;140.0;20.0;140.0;150.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>376</x>
+      <y>1120</y>
+      <w>176</w>
+      <h>96</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;-
+input_queue_blocktype = Tag</panel_attributes>
+    <additional_attributes>200.0;20.0;70.0;20.0;70.0;100.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>536</x>
+      <y>1048</y>
+      <w>168</w>
+      <h>104</h>
+    </coordinates>
+    <panel_attributes>Fin_do
+--
+input_queue_next 	= 0
+output_queue_write = 0
+valid 					= 0
+ready 					= 0
+operation 			= applyKeyF
+round 					= 0</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>608</x>
+      <y>1144</y>
+      <w>24</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;70.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>536</x>
+      <y>1200</y>
+      <w>168</w>
+      <h>104</h>
+    </coordinates>
+    <panel_attributes>Fin_process_a
+--
+input_queue_next 	= 0
+output_queue_write = 0
+valid 					= 0
+ready 					= 0
+operation 			= applyRound
+round 					+= 1</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>696</x>
+      <y>1224</y>
+      <w>88</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;-
+a times
+</panel_attributes>
+    <additional_attributes>10.0;70.0;50.0;70.0;50.0;10.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>608</x>
+      <y>1296</y>
+      <w>80</w>
+      <h>80</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;-
+round = a-1</panel_attributes>
+    <additional_attributes>10.0;80.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>536</x>
+      <y>1360</y>
+      <w>168</w>
+      <h>104</h>
+    </coordinates>
+    <panel_attributes>Fin_last_do
+--
+input_queue_next 	= 0
+output_queue_write = 0
+valid 					= 0
+ready 					= 0
+operation 			= applyKeyF
+round 					= 0</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>480</x>
+      <y>1400</y>
+      <w>72</w>
+      <h>24</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;70.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>24</x>
+      <y>40</y>
+      <w>312</w>
+      <h>1384</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>360.0;10.0;30.0;10.0;10.0;1710.0;370.0;1710.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>320</x>
+      <y>1360</y>
+      <w>168</w>
+      <h>104</h>
+    </coordinates>
+    <panel_attributes>Fin_result
+--
+input_queue_next 	= 0
+output_queue_write = 0
+valid 					= tagsEqual
+ready 					= 1
+operation 			= NOP
+round 					= 0</panel_attributes>
+    <additional_attributes/>
+  </element>
+</diagram>
