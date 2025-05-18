@@ -14,8 +14,8 @@ use IEEE.NUMERIC_STD.ALL;
 entity FSM is
     -- number of rounds
     generic (
-        g_a         : integer := 12,
-        g_b         : integer := 8,
+        g_a         : integer := 12;
+        g_b         : integer := 8;
         g_rnd_width : integer := 4
         );
     Port ( 
@@ -32,7 +32,7 @@ entity FSM is
         ready                    : out STD_LOGIC;
         
         operation                : out Opcodes;
-        round                    : out STD_LOGIC_VECTOR(g_round_depth-1 downto 0)  -- expecting numbers 0 to 11 in binary
+        round                    : out STD_LOGIC_VECTOR(g_rnd_width-1 downto 0)  -- expecting numbers 0 to 11 in binary
         );
 end FSM;
 
@@ -42,8 +42,8 @@ architecture Behavioral of FSM is
 -- SIGNALS
 -------------------------------------------------------------------------------------------------
 
-type t_state is (IDLE, WAIT, INIT_DO, INIT_PROCESS_A, INIT_KEY, AD_DO, AD_PROCESS_B, AD_FINISH, DEC_DO, DEC_PROCESS_B, WAIT_LAST, FIN_DO, FIN_PROCESS_A, FIN_DO_LAST, FIN_RESULT);
-signal s_state is t_state;
+type t_state is (IDLE, WAIT_FIRST, INIT_DO, INIT_PROCESS_A, INIT_KEY, AD_DO, AD_PROCESS_B, AD_FINISH, DEC_DO, DEC_PROCESS_B, WAIT_LAST, FIN_DO, FIN_PROCESS_A, FIN_DO_LAST, FIN_RESULT);
+signal s_state : t_state;
 
 signal s_ctr_a, s_ctr_b : integer; -- Round counters 
 
@@ -63,18 +63,18 @@ begin
     begin
         -- processing pipeline for BP detection
         if rising_edge(clk) then
-            case state is
+            case s_state is
                 when IDLE =>
                 if start then
-                    s_state <= WAIT;
+                    s_state <= WAIT_FIRST;
                 end if;
                 
-                when WAIT =>
+                when WAIT_FIRST =>
                 case input_queue_blocktype is
                     when Nonce      => s_state <= INIT_DO;
                     when AData      => s_state <= AD_DO;
                     when Message    => s_state <= AD_FINISH;
-                    when others     => s_state <= IDLE,
+                    when others     => s_state <= IDLE;
                 end case;
                 
                 when INIT_DO =>
@@ -86,32 +86,32 @@ begin
                 end if;     
 
                 when INIT_KEY =>
-                s_state <= WAIT;
+                s_state <= WAIT_FIRST;
                 
                 when AD_DO =>
                 s_state <= AD_PROCESS_B;
 
                 when AD_PROCESS_B =>
                 if s_ctr_b = g_b-1 then
-                    s_state <= WAIT;
+                    s_state <= WAIT_FIRST;
                 end if;
 
                 when AD_FINISH =>
                 s_state <= DEC_DO;
 
                 when DEC_DO => 
-                s_state <= FIN_PROCESS_B;
+                s_state <= FIN_PROCESS_A;
 
-                when FIN_PROCESS_B =>
+                when FIN_PROCESS_A =>
                 if s_ctr_b = g_b - 1 then
-                    s_state <= WAIT_LAST
+                    s_state <= WAIT_LAST;
                 end if;
 
                 when WAIT_LAST =>
                 case input_queue_blocktype is
                     when Message    => s_state <= DEC_DO;
                     when Tag        => s_state <= FIN_DO;
-                    when others     => s_state <= IDLE,
+                    when others     => s_state <= IDLE;
                 end case;
 
                 when FIN_DO =>
@@ -132,16 +132,16 @@ begin
 
             -- in case CPU stops IP or reset
             if reset then
-                state <= IDLE;
+                s_state <= IDLE;
             end if;
 
         end if;
     end process P_next_state;
 
     -- Output logic
-    P_output_logic : process (state)
+    P_output_logic : process (s_state)
     begin
-        case state is
+        case s_state is
             when IDLE =>
                 input_queue_next    <= '0';
                 output_queue_write  <= '0';
@@ -149,8 +149,8 @@ begin
                 ready               <= '0';
                 operation           <= NOP;
                 round               <= (others => '0');
-            when WAIT =>
-                input_queue_next    <= '0';
+            when WAIT_FIRST =>
+                input_queue_next    <= '1';
                 output_queue_write  <= '0';
                 valid               <= '0';
                 ready               <= '0';
@@ -161,59 +161,59 @@ begin
                 output_queue_write  <= '0';
                 valid               <= '0';
                 ready               <= '0';
-                operation           <= NOP;
+                operation           <= Init;
                 round               <= (others => '0');
             when INIT_PROCESS_A =>
                 input_queue_next    <= '0';
                 output_queue_write  <= '0';
                 valid               <= '0';
                 ready               <= '0';
-                operation           <= NOP;
-                round               <= (others => '0');
+                operation           <= applyRound;
+                round               <= std_logic_vector(to_unsigned(to_integer(unsigned( round )) + 1, g_rnd_width));
             when INIT_KEY =>
                 input_queue_next    <= '0';
                 output_queue_write  <= '0';
                 valid               <= '0';
                 ready               <= '0';
-                operation           <= NOP;
+                operation           <= applyKeyI;
                 round               <= (others => '0');
             when AD_DO =>
                 input_queue_next    <= '0';
                 output_queue_write  <= '0';
                 valid               <= '0';
                 ready               <= '0';
-                operation           <= NOP;
+                operation           <= applyAD;
                 round               <= (others => '0');
             when AD_PROCESS_B =>
                 input_queue_next    <= '0';
                 output_queue_write  <= '0';
                 valid               <= '0';
                 ready               <= '0';
-                operation           <= NOP;
-                round               <= (others => '0');
+                operation           <= applyRound;
+                round               <= std_logic_vector(to_unsigned(to_integer(unsigned( round )) + 1, g_rnd_width));
             when AD_FINISH =>
                 input_queue_next    <= '0';
                 output_queue_write  <= '0';
                 valid               <= '0';
                 ready               <= '0';
-                operation           <= NOP;
+                operation           <= applyOne;
                 round               <= (others => '0');
             when DEC_DO =>
                 input_queue_next    <= '0';
-                output_queue_write  <= '0';
+                output_queue_write  <= '1';
                 valid               <= '0';
                 ready               <= '0';
-                operation           <= NOP;
+                operation           <= applyDec;
                 round               <= (others => '0');
             when DEC_PROCESS_B =>
                 input_queue_next    <= '0';
                 output_queue_write  <= '0';
                 valid               <= '0';
                 ready               <= '0';
-                operation           <= NOP;
-                round               <= (others => '0');
+                operation           <= applyRound;
+                round               <= std_logic_vector(to_unsigned(to_integer(unsigned( round )) + 1, g_rnd_width));
             when WAIT_LAST =>
-                input_queue_next    <= '0';
+                input_queue_next    <= '1';
                 output_queue_write  <= '0';
                 valid               <= '0';
                 ready               <= '0';
@@ -224,27 +224,27 @@ begin
                 output_queue_write  <= '0';
                 valid               <= '0';
                 ready               <= '0';
-                operation           <= NOP;
+                operation           <= applyKeyF;
                 round               <= (others => '0');
             when FIN_PROCESS_A =>
                 input_queue_next    <= '0';
                 output_queue_write  <= '0';
                 valid               <= '0';
                 ready               <= '0';
-                operation           <= NOP;
-                round               <= (others => '0');
+                operation           <= applyRound;
+                round               <= std_logic_vector(to_unsigned(to_integer(unsigned( round )) + 1, g_rnd_width));
             when FIN_DO_LAST =>
                 input_queue_next    <= '0';
                 output_queue_write  <= '0';
                 valid               <= '0';
                 ready               <= '0';
-                operation           <= NOP;
+                operation           <= applyKeyF;
                 round               <= (others => '0');
             when FIN_RESULT =>
                 input_queue_next    <= '0';
                 output_queue_write  <= '0';
-                valid               <= '0';
-                ready               <= '0';
+                valid               <= tagsEqual;
+                ready               <= '1';
                 operation           <= NOP;
                 round               <= (others => '0');
             when others =>
