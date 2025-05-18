@@ -19,7 +19,7 @@ entity FSM is
         g_rnd_width : integer := 4
         );
     Port ( 
-        clk : in STD_LOGIC;
+        clk                      : in STD_LOGIC;
         reset                    : in STD_LOGIC; -- active high
         start                    : in STD_LOGIC; -- active high
         tagsEqual                : in STD_LOGIC;
@@ -45,7 +45,7 @@ architecture Behavioral of FSM is
 type t_state is (IDLE, WAIT_FIRST, INIT_DO, INIT_PROCESS_A, INIT_KEY, AD_DO, AD_PROCESS_B, AD_FINISH, DEC_DO, DEC_PROCESS_B, WAIT_LAST, FIN_DO, FIN_PROCESS_A, FIN_DO_LAST, FIN_RESULT);
 signal s_state : t_state;
 
-signal s_ctr_a, s_ctr_b : integer; -- Round counters 
+signal s_ctr : integer; -- Round counters 
 
 begin
 
@@ -81,7 +81,7 @@ begin
                 s_state <= INIT_PROCESS_A;
 
                 when INIT_PROCESS_A =>
-                if s_ctr_a = g_a-1 then
+                if s_ctr = g_a-1 then
                     s_state <= INIT_KEY;
                 end if;     
 
@@ -92,7 +92,7 @@ begin
                 s_state <= AD_PROCESS_B;
 
                 when AD_PROCESS_B =>
-                if s_ctr_b = g_b-1 then
+                if s_ctr = g_b-1 then
                     s_state <= WAIT_FIRST;
                 end if;
 
@@ -100,10 +100,10 @@ begin
                 s_state <= DEC_DO;
 
                 when DEC_DO => 
-                s_state <= FIN_PROCESS_A;
+                s_state <= DEC_PROCESS_B;
 
-                when FIN_PROCESS_A =>
-                if s_ctr_b = g_b - 1 then
+                when DEC_PROCESS_B =>
+                if s_ctr = g_b - 1 then
                     s_state <= WAIT_LAST;
                 end if;
 
@@ -118,7 +118,7 @@ begin
                 s_state <= FIN_PROCESS_A;
 
                 when FIN_PROCESS_A =>
-                if s_ctr_a = g_a-1 then
+                if s_ctr = g_a-1 then
                     s_state <= FIN_DO_LAST;
                 end if;
 
@@ -169,7 +169,7 @@ begin
                 valid               <= '0';
                 ready               <= '0';
                 operation           <= applyRound;
-                round               <= std_logic_vector(to_unsigned(to_integer(unsigned( round )) + 1, g_rnd_width));
+                round               <= std_logic_vector(to_unsigned(s_ctr, g_rnd_width));
             when INIT_KEY =>
                 input_queue_next    <= '0';
                 output_queue_write  <= '0';
@@ -190,7 +190,7 @@ begin
                 valid               <= '0';
                 ready               <= '0';
                 operation           <= applyRound;
-                round               <= std_logic_vector(to_unsigned(to_integer(unsigned( round )) + 1, g_rnd_width));
+                round               <= std_logic_vector(to_unsigned(s_ctr, g_rnd_width));
             when AD_FINISH =>
                 input_queue_next    <= '0';
                 output_queue_write  <= '0';
@@ -211,7 +211,7 @@ begin
                 valid               <= '0';
                 ready               <= '0';
                 operation           <= applyRound;
-                round               <= std_logic_vector(to_unsigned(to_integer(unsigned( round )) + 1, g_rnd_width));
+                round               <= std_logic_vector(to_unsigned(s_ctr, g_rnd_width));
             when WAIT_LAST =>
                 input_queue_next    <= '1';
                 output_queue_write  <= '0';
@@ -232,7 +232,7 @@ begin
                 valid               <= '0';
                 ready               <= '0';
                 operation           <= applyRound;
-                round               <= std_logic_vector(to_unsigned(to_integer(unsigned( round )) + 1, g_rnd_width));
+                round               <= std_logic_vector(to_unsigned(s_ctr, g_rnd_width));
             when FIN_DO_LAST =>
                 input_queue_next    <= '0';
                 output_queue_write  <= '0';
@@ -256,4 +256,44 @@ begin
                 round               <= (others => '0');        
         end case;
     end process P_output_logic;
+    
+    -- Counters logic
+    P_ctr_logic : process (clk)
+    begin
+    if rising_edge(clk) then
+        case s_state is
+                when INIT_PROCESS_A =>
+                s_ctr <= s_ctr + 1;
+                if s_ctr = g_a-1 then
+                    s_ctr <= 0;
+                end if;  
+                
+                when AD_PROCESS_B =>
+                s_ctr <= s_ctr + 1;
+                if s_ctr = g_b-1 then
+                    s_ctr <= 0;
+                end if;
+                
+                when DEC_PROCESS_B =>
+                s_ctr <= s_ctr + 1;
+                if s_ctr = g_b - 1 then
+                    s_ctr <= 0;
+                end if;
+                
+                when FIN_PROCESS_A =>
+                s_ctr <= s_ctr + 1;
+                if s_ctr = g_a-1 then
+                    s_ctr <= 0;
+                end if;
+                
+                when others => null;
+        end case;
+    end if;
+    
+    -- in case CPU stops IP or reset
+    if reset then
+        s_ctr <= 0;
+    end if;
+    end process P_ctr_logic;
+
 end Behavioral;

@@ -1,0 +1,9 @@
+# compile vhdl design source files
+vhdl2008 xil_defaultlib  \
+"../../../../ascon.srcs/sources_1/common.vhd" \
+"../../../../ascon.srcs/sources_1/FSM.vhd" \
+"../../../../ascon.srcs/sources_1/ASCON.vhd" \
+"../../../../ascon.srcs/sources_1/testbench.vhd" \
+
+# Do not sort compile order
+nosort
