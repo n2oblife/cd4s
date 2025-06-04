@@ -1,9 +1,0 @@
-Time resolution is 1 ps
-Note: First block missmatch: expected 2C736E6F6974616C75746172676E6F43h, recieved 00000000000000000000000000000000h
-Time: 230 ns  Iteration: 2  Process: /testbench/line__110  File: C:/Users/z005384k/git_repos/cd4s/ascon/ascon.srcs/sources_1/testbench.vhd
-Note: Second block missmatch: expected 742064657470797263656420756F7920h, recieved 00000000000000000000000000000000h
-Time: 290 ns  Iteration: 2  Process: /testbench/line__110  File: C:/Users/z005384k/git_repos/cd4s/ascon/ascon.srcs/sources_1/testbench.vhd
-Note: Third block missmatch: expected 00002174786574207473657420736968h, recieved 00000000000000000000000000000000h
-Time: 480 ns  Iteration: 2  Process: /testbench/line__110  File: C:/Users/z005384k/git_repos/cd4s/ascon/ascon.srcs/sources_1/testbench.vhd
-Note: Testvector 1 failed
-Time: 560 ns  Iteration: 2  Process: /testbench/line__110  File: C:/Users/z005384k/git_repos/cd4s/ascon/ascon.srcs/sources_1/testbench.vhd
