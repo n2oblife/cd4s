@@ -156,17 +156,17 @@ begin
                 output_queue_write  <= '0';
                 valid               <= '0';
                 ready               <= '0';
-                operation           <= NOP;
-                round               <= (others => '0');
+                operation           <= applyRound;
+                round               <= round + std_logic_vector(to_unsigned(1, g_rd_width));
             when INIT_KEY =>
                 input_queue_next    <= '0';
                 output_queue_write  <= '0';
                 valid               <= '0';
                 ready               <= '0';
-                operation           <= NOP;
+                operation           <= applyKeyI;
                 round               <= (others => '0');
             when WAIT_INIT =>
-                input_queue_next    <= '0';
+                input_queue_next    <= '1';
                 output_queue_write  <= '0';
                 valid               <= '0';
                 ready               <= '0';
@@ -177,31 +177,31 @@ begin
                 output_queue_write  <= '0';
                 valid               <= '0';
                 ready               <= '0';
-                operation           <= NOP;
+                operation           <= applyAD;
                 round               <= (others => '0');
             when COMPUTE_MESSAGE =>
                 input_queue_next    <= '0';
                 output_queue_write  <= '0';
                 valid               <= '0';
                 ready               <= '0';
-                operation           <= NOP;
+                operation           <= applyDec;
                 round               <= (others => '0');
             when ROUND_AD =>
                 input_queue_next    <= '0';
                 output_queue_write  <= '0';
                 valid               <= '0';
                 ready               <= '0';
-                operation           <= NOP;
+                operation           <= applyRound;
                 round               <= (others => '0');
             when COMPUTE_ONE =>
                 input_queue_next    <= '0';
                 output_queue_write  <= '0';
                 valid               <= '0';
                 ready               <= '0';
-                operation           <= NOP;
+                operation           <= applyOne;
                 round               <= (others => '0');
             when WAIT_FIN =>
-                input_queue_next    <= '0';
+                input_queue_next    <= '1';
                 output_queue_write  <= '0';
                 valid               <= '0';
                 ready               <= '0';
@@ -212,27 +212,27 @@ begin
                 output_queue_write  <= '0';
                 valid               <= '0';
                 ready               <= '0';
-                operation           <= NOP;
+                operation           <= applyRound;
                 round               <= (others => '0');
              when FIN_KEY =>
                 input_queue_next    <= '0';
                 output_queue_write  <= '0';
                 valid               <= '0';
                 ready               <= '0';
-                operation           <= NOP;
+                operation           <= applyKeyF;
                 round               <= (others => '0');
             when FIN_ROUND =>
                 input_queue_next    <= '0';
                 output_queue_write  <= '0';
                 valid               <= '0';
                 ready               <= '0';
-                operation           <= NOP;
+                operation           <= applyRound;
                 round               <= (others => '0');
             when RETURN_TAG =>
                 input_queue_next    <= '0';
                 output_queue_write  <= '0';
-                valid               <= '0';
-                ready               <= '0';
+                valid               <= '1';
+                ready               <= '1';
                 operation           <= NOP;
                 round               <= (others => '0');
             when others =>
@@ -251,6 +251,7 @@ begin
     begin
     if rising_edge(clk) then
         case s_state is
+            -- handle associated data
             when IDLE       => s_ad <= '0';
             when COMPUTE_AD => s_ad <= '1';    
             when others     => null;
