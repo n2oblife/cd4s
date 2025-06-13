@@ -6,6 +6,30 @@
 -- (c) TUM
 -- FOR EDUCATIONAL PURPOSE ONLY
 ----------------------------------------------------------------------------------
+-- Naming conventions:
+--
+-- i_Port: Input entity port
+-- o_Port: Output entity port
+-- b_Port: Bidirectional entity port
+-- g_My_Generic: Generic entity port
+--
+-- c_My_Constant: Constant definition
+-- t_My_Type: Custom type definition
+--
+-- sc_My_Signal : Signal between components
+-- My_Signal_n: Active low signal
+-- v_My_Variable: Variable
+-- sm_My_Signal: FSM signal
+-- pkg_Param: Element Param coming from a package
+--
+-- My_Signal_re: Rising edge detection of My_Signal
+-- My_Signal_fe: Falling edge detection of My_Signal
+-- My_Signal_rX: X times registered My_Signal signal
+--
+-- P_Process_Name: Process
+-- reg_My_Register : Register
+--
+----------------------------------------------------------------------------------
 
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
@@ -45,7 +69,8 @@ architecture Behavioral of FSM is
 -------------------------------------------------------------------------------------------------
 
 type t_state is(
-    IDLE, 
+    IDLE,
+    ASK_NEXT,
     WAIT_NONCE, 
     INIT_NONCE, 
     ROUND_NONCE, 
@@ -58,12 +83,20 @@ type t_state is(
     WAIT_FIN,
     ROUND_DEC,
     FIN_KEY,
-    FIN_ROUND,
+    ROUND_FIN,
     RETURN_TAG);
+    
+type t_step is(
+    STANDING,
+    INITIALIZATION,
+    ASSOCIATED_DATA,
+    PLAINTEXT,
+    FINALIZATION);
 
 signal s_state : t_state;
-
+signal s_step : t_step;
 signal s_ad : std_logic; -- handle associated data
+signal s_round_counter : integer;
 
 begin
 
@@ -79,16 +112,22 @@ begin
     -- Next state process
     P_next_state : process (clk)
     begin
-        -- processing pipeline for BP detection
         if rising_edge(clk) then
             case s_state is
                 when IDLE => if start then s_state <= WAIT_NONCE; end if;
+                when ASK_NEXT =>
+                case s_step is
+                    when INITIALIZATION => s_state <= WAIT_NONCE;
+                    when ASSOCIATED_DATA => s_state <= WAIT_INIT;
+                    when PLAINTEXT => s_state <= WAIT_FIN;
+                    when others => s_state <= IDLE;
+                end case;
                 
                 -- Initialization
-                when WAIT_NONCE => if input_queue_blocktype = Nonce then s_state <= INIT_NONCE; end if;
+                when WAIT_NONCE => if input_queue_blocktype = Nonce then s_state <= INIT_NONCE; else s_state <= IDLE; end if;
                 when INIT_NONCE => s_state <= ROUND_NONCE;
                 when ROUND_NONCE => if (to_integer(unsigned(round)) = g_a-1) then s_state <= INIT_KEY; end if;
-                when INIT_KEY => s_state <= WAIT_INIT;
+                when INIT_KEY => s_state <= ASK_NEXT;
                 
                 -- Transition after Initialization
                 when WAIT_INIT =>
@@ -99,12 +138,12 @@ begin
                 
                 -- Associated Data
                 when COMPUTE_AD => s_state <= ROUND_AD;
-                when ROUND_AD => if (to_integer(unsigned(round)) = g_b-1) then s_state <= WAIT_INIT; end if;
+                when ROUND_AD => if (to_integer(unsigned(round)) = g_a-1) then s_state <= ASK_NEXT; end if;
                 when COMPUTE_ONE => s_state <= COMPUTE_MESSAGE;
                 
                 -- Plaintext
-                when COMPUTE_MESSAGE => s_state <= WAIT_FIN;
-                when ROUND_DEC => if (to_integer(unsigned(round)) = g_b-1) then s_state <= COMPUTE_MESSAGE; end if;
+                when COMPUTE_MESSAGE => s_state <= ASK_NEXT;
+                when ROUND_DEC => if (to_integer(unsigned(round)) = g_a-1) then s_state <= COMPUTE_MESSAGE; end if;
                                 
                 -- Transition after Plaintext
                 when WAIT_FIN =>
@@ -112,23 +151,21 @@ begin
                 if input_queue_blocktype = Tag then s_state <= FIN_KEY; end if;
                     
                 -- Finalization
-                when FIN_KEY => s_state <= FIN_ROUND; 
-                when FIN_ROUND =>if (to_integer(unsigned(round)) = g_a-1) then s_state <= RETURN_TAG; end if;
+                when FIN_KEY => s_state <= ROUND_FIN; 
+                when ROUND_FIN => if (to_integer(unsigned(round)) = g_a-1) then s_state <= RETURN_TAG; end if;
                 when RETURN_TAG => s_state <= IDLE;
                            
                 when others => s_state <= IDLE;
             end case;
-
+    
             -- in case CPU stops IP or reset
             if reset then s_state <= IDLE; end if;
-
-        end if;
+       end if;
     end process P_next_state;
 
     -- Output logic
     P_output_logic : process (clk)
     begin
-    if rising_edge(clk) then
         case s_state is
             when IDLE =>
                 input_queue_next    <= '0';
@@ -136,114 +173,99 @@ begin
                 valid               <= '0';
                 ready               <= '0';
                 operation           <= NOP;
-                round               <= (others => '0');
-            when WAIT_NONCE =>
+            when ASK_NEXT =>
                 input_queue_next    <= '1';
                 output_queue_write  <= '0';
                 valid               <= '0';
                 ready               <= '0';
                 operation           <= NOP;
-                round               <= (others => '0');
+            when WAIT_NONCE =>
+                input_queue_next    <= '0';
+                output_queue_write  <= '0';
+                valid               <= '0';
+                ready               <= '0';
+                operation           <= NOP;
             when INIT_NONCE =>
                 input_queue_next    <= '0';
                 output_queue_write  <= '0';
                 valid               <= '0';
                 ready               <= '0';
                 operation           <= Init;
-                round               <= (others => '0');
             when ROUND_NONCE =>
                 input_queue_next    <= '0';
                 output_queue_write  <= '0';
                 valid               <= '0';
                 ready               <= '0';
                 operation           <= applyRound;
-                round               <= round + std_logic_vector(to_unsigned(1, g_rd_width));
             when INIT_KEY =>
                 input_queue_next    <= '0';
                 output_queue_write  <= '0';
                 valid               <= '0';
                 ready               <= '0';
                 operation           <= applyKeyI;
-                round               <= (others => '0');
             when WAIT_INIT =>
-                input_queue_next    <= '1';
+                input_queue_next    <= '0';
                 output_queue_write  <= '0';
                 valid               <= '0';
                 ready               <= '0';
                 operation           <= NOP;
-                round               <= (others => '0');
             when COMPUTE_AD =>
                 input_queue_next    <= '0';
                 output_queue_write  <= '0';
                 valid               <= '0';
                 ready               <= '0';
                 operation           <= applyAD;
-                round               <= (others => '0');
             when COMPUTE_MESSAGE =>
                 input_queue_next    <= '0';
-                output_queue_write  <= '0';
+                output_queue_write  <= '1';
                 valid               <= '0';
                 ready               <= '0';
                 operation           <= applyDec;
-                round               <= (others => '0');
             when ROUND_AD =>
                 input_queue_next    <= '0';
                 output_queue_write  <= '0';
                 valid               <= '0';
                 ready               <= '0';
                 operation           <= applyRound;
-                round               <= (others => '0');
             when COMPUTE_ONE =>
                 input_queue_next    <= '0';
                 output_queue_write  <= '0';
                 valid               <= '0';
                 ready               <= '0';
                 operation           <= applyOne;
-                round               <= (others => '0');
             when WAIT_FIN =>
-                input_queue_next    <= '1';
+                input_queue_next    <= '0';
                 output_queue_write  <= '0';
                 valid               <= '0';
                 ready               <= '0';
                 operation           <= NOP;
-                round               <= (others => '0');
             when ROUND_DEC =>
                 input_queue_next    <= '0';
                 output_queue_write  <= '0';
                 valid               <= '0';
                 ready               <= '0';
                 operation           <= applyRound;
-                round               <= (others => '0');
              when FIN_KEY =>
                 input_queue_next    <= '0';
                 output_queue_write  <= '0';
                 valid               <= '0';
                 ready               <= '0';
                 operation           <= applyKeyF;
-                round               <= (others => '0');
-            when FIN_ROUND =>
+            when ROUND_FIN =>
                 input_queue_next    <= '0';
                 output_queue_write  <= '0';
                 valid               <= '0';
                 ready               <= '0';
                 operation           <= applyRound;
-                round               <= (others => '0');
             when RETURN_TAG =>
                 input_queue_next    <= '0';
-                output_queue_write  <= '0';
+                output_queue_write  <= '1';
                 valid               <= '1';
                 ready               <= '1';
                 operation           <= NOP;
-                round               <= (others => '0');
-            when others =>
-                input_queue_next    <= '0';
-                output_queue_write  <= '0';
-                valid               <= '0';
-                ready               <= '0';
-                operation           <= NOP;
-                round               <= (others => '0');        
+            when others => null;
         end case;
-    end if;
+    round <= std_logic_vector(to_unsigned( s_round_counter, g_rnd_width));
     end process P_output_logic;
     
     -- Internal Signal logic
@@ -252,15 +274,34 @@ begin
     if rising_edge(clk) then
         case s_state is
             -- handle associated data
-            when IDLE       => s_ad <= '0';
-            when COMPUTE_AD => s_ad <= '1';    
+            when IDLE =>
+                s_ad <= '0'; 
+                s_round_counter <= 0;
+                if start then s_step <= INITIALIZATION; end if;
+                
+            when COMPUTE_AD => s_ad <= '1';
+            
+            when INIT_KEY => s_step <= ASSOCIATED_DATA;        
+            when COMPUTE_MESSAGE => s_step <= PLAINTEXT;
+            when FIN_KEY => s_step <= FINALIZATION;
+            when RETURN_TAG => s_step <= STANDING;
+            
+            when WAIT_INIT => s_round_counter <= g_a - g_b;
+            when WAIT_FIN =>  s_round_counter <= g_a - g_b;
+            when ROUND_NONCE => s_round_counter <= s_round_counter + 1;
+            when ROUND_AD => s_round_counter <= s_round_counter + 1;
+            when ROUND_DEC => s_round_counter <= s_round_counter + 1;
+            when ROUND_FIN => s_round_counter <= s_round_counter + 1;
+            
             when others     => null;
         end case;
-    end if;
-    
-    -- in case CPU stops IP or reset
-    if reset then
-        s_ad <= '0';
+        
+        -- in case CPU stops IP or reset
+        if reset then
+            s_ad <= '0';
+            s_round_counter <= 0;
+            s_step <= STANDING;
+        end if;
     end if;
     end process P_int_sig_logic;
 
