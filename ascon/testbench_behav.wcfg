@@ -11,15 +11,31 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="0.000 ns"></ZoomStartTime>
-      <ZoomEndTime time="313.801 ns"></ZoomEndTime>
-      <Cursor1Time time="48.600 ns"></Cursor1Time>
+      <ZoomStartTime time="175.000 ns"></ZoomStartTime>
+      <ZoomEndTime time="332.401 ns"></ZoomEndTime>
+      <Cursor1Time time="293.600 ns"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="150"></NameColumnWidth>
-      <ValueColumnWidth column_width="88"></ValueColumnWidth>
+      <ValueColumnWidth column_width="83"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="2" />
+   <WVObjectSize size="6" />
+   <wvobject fp_name="/testbench/clk" type="logic">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject fp_name="/testbench/reset" type="logic">
+      <obj_property name="ElementShortName">reset</obj_property>
+      <obj_property name="ObjectShortName">reset</obj_property>
+   </wvobject>
+   <wvobject fp_name="/testbench/start" type="logic">
+      <obj_property name="ElementShortName">start</obj_property>
+      <obj_property name="ObjectShortName">start</obj_property>
+   </wvobject>
+   <wvobject fp_name="/testbench/next_test" type="logic">
+      <obj_property name="ElementShortName">next_test</obj_property>
+      <obj_property name="ObjectShortName">next_test</obj_property>
+   </wvobject>
    <wvobject fp_name="group17" type="group">
       <obj_property name="label">testbench</obj_property>
       <obj_property name="DisplayName">label</obj_property>
@@ -40,30 +56,14 @@
          <obj_property name="ElementShortName">decoding_correct</obj_property>
          <obj_property name="ObjectShortName">decoding_correct</obj_property>
       </wvobject>
-      <wvobject fp_name="/testbench/next_test" type="logic">
-         <obj_property name="ElementShortName">next_test</obj_property>
-         <obj_property name="ObjectShortName">next_test</obj_property>
-      </wvobject>
    </wvobject>
    <wvobject fp_name="group18" type="group">
       <obj_property name="label">FSM</obj_property>
       <obj_property name="DisplayName">label</obj_property>
       <obj_property name="isExpanded"></obj_property>
-      <wvobject fp_name="/testbench/clk" type="logic">
-         <obj_property name="ElementShortName">clk</obj_property>
-         <obj_property name="ObjectShortName">clk</obj_property>
-      </wvobject>
-      <wvobject fp_name="/testbench/reset" type="logic">
-         <obj_property name="ElementShortName">reset</obj_property>
-         <obj_property name="ObjectShortName">reset</obj_property>
-      </wvobject>
-      <wvobject fp_name="/testbench/start" type="logic">
-         <obj_property name="ElementShortName">start</obj_property>
-         <obj_property name="ObjectShortName">start</obj_property>
-      </wvobject>
-      <wvobject fp_name="/testbench/impl/Control/tagsEqual" type="logic">
-         <obj_property name="ElementShortName">tagsEqual</obj_property>
-         <obj_property name="ObjectShortName">tagsEqual</obj_property>
+      <wvobject fp_name="/testbench/impl/Control/operation" type="other">
+         <obj_property name="ElementShortName">operation</obj_property>
+         <obj_property name="ObjectShortName">operation</obj_property>
       </wvobject>
       <wvobject fp_name="/testbench/impl/Control/input_queue_blocktype" type="other">
          <obj_property name="ElementShortName">input_queue_blocktype</obj_property>
@@ -81,6 +81,19 @@
          <obj_property name="ElementShortName">output_queue_write</obj_property>
          <obj_property name="ObjectShortName">output_queue_write</obj_property>
       </wvobject>
+      <wvobject fp_name="/testbench/impl/Control/round" type="array">
+         <obj_property name="ElementShortName">round[3:0]</obj_property>
+         <obj_property name="ObjectShortName">round[3:0]</obj_property>
+         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/testbench/impl/Control/s_round_counter" type="other">
+         <obj_property name="ElementShortName">s_round_counter</obj_property>
+         <obj_property name="ObjectShortName">s_round_counter</obj_property>
+      </wvobject>
+      <wvobject fp_name="/testbench/impl/Control/s_step" type="other">
+         <obj_property name="ElementShortName">s_step</obj_property>
+         <obj_property name="ObjectShortName">s_step</obj_property>
+      </wvobject>
       <wvobject fp_name="/testbench/impl/Control/valid" type="logic">
          <obj_property name="ElementShortName">valid</obj_property>
          <obj_property name="ObjectShortName">valid</obj_property>
@@ -89,17 +102,9 @@
          <obj_property name="ElementShortName">ready</obj_property>
          <obj_property name="ObjectShortName">ready</obj_property>
       </wvobject>
-      <wvobject fp_name="/testbench/impl/Control/operation" type="other">
-         <obj_property name="ElementShortName">operation</obj_property>
-         <obj_property name="ObjectShortName">operation</obj_property>
-      </wvobject>
-      <wvobject fp_name="/testbench/impl/Control/round" type="array">
-         <obj_property name="ElementShortName">round[3:0]</obj_property>
-         <obj_property name="ObjectShortName">round[3:0]</obj_property>
-      </wvobject>
-      <wvobject fp_name="/testbench/impl/Control/s_ctr" type="other">
-         <obj_property name="ElementShortName">s_ctr</obj_property>
-         <obj_property name="ObjectShortName">s_ctr</obj_property>
+      <wvobject fp_name="/testbench/impl/Control/tagsEqual" type="logic">
+         <obj_property name="ElementShortName">tagsEqual</obj_property>
+         <obj_property name="ObjectShortName">tagsEqual</obj_property>
       </wvobject>
    </wvobject>
 </wave_config>
