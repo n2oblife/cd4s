@@ -12,12 +12,12 @@ Generic (
 Port (
     clk	    : in STD_LOGIC;
     reset   : in STD_LOGIC;
-    input_r	: in std_logic;
-    u       : in STD_LOGIC_VECTOR(input_width-1 downto 0);
-    v       : in STD_LOGIC_VECTOR(input_width-1 downto 0);
+    input_r	: in std_logic;                                 -- computation starts at '1'
+    u       : in STD_LOGIC_VECTOR(input_width-1 downto 0);  -- positive
+    v       : in STD_LOGIC_VECTOR(input_width-1 downto 0);  -- positive
     
     done    : out STD_LOGIC;
-    inverse : out STD_LOGIC_VECTOR(input_width-1 downto 0)
+    inverse : out STD_LOGIC_VECTOR(input_width-1 downto 0)  -- should be positive and under p
 );
 end field_inverse_eea;
 
@@ -52,16 +52,16 @@ begin
 -------------------------------------------------------------------------------------------------
 
 -- IP_ADDER
-IP_adder : adder
-generic map(
-    input_width => input_width,
-);
-port map(
-    a     => ,
-    b     => ,
-    neg_b => ,      
-    s     => ,
-);
+-- IP_adder : adder
+-- generic map(
+--     input_width => input_width,
+-- );
+-- port map(
+--     a     => ,
+--     b     => ,
+--     neg_b => ,      
+--     s     =>
+-- );
 
 -------------------------------------------------------------------------------------------------
 -- PROCESS
