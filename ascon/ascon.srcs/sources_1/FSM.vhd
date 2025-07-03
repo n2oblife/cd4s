@@ -253,7 +253,6 @@ begin
         if reset then
             s_ad            <= '0';
             s_round_counter <= 0;
-            s_write_buffer  <= '0';
             s_step          <= STANDING;
         end if;
     end if;

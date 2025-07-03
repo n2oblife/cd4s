@@ -45,31 +45,226 @@ component adder is
     );
 end component adder;
 
+-------------------------------------------------------------------------------------------------
+-- SIGNALS
+-------------------------------------------------------------------------------------------------
+type state_type is (IDLE, CHECK_U_EVEN, CHECK_V_EVEN, COMPARE_UV, UPDATE_U, UPDATE_V, DONE_STATE);
+signal current_state, next_state : state_type;
+
+-- Main algorithm variables
+signal reg_u, reg_v : STD_LOGIC_VECTOR(input_width-1 downto 0);
+signal reg_x1, reg_x2 : STD_LOGIC_VECTOR(input_width-1 downto 0);
+
+-- Adder control and results
+signal adder1_a, adder1_b : STD_LOGIC_VECTOR(input_width-1 downto 0);
+signal adder1_neg_b : STD_LOGIC;
+signal adder1_result : STD_LOGIC_VECTOR(input_width downto 0);
+
+signal adder2_a, adder2_b : STD_LOGIC_VECTOR(input_width-1 downto 0);
+signal adder2_neg_b : STD_LOGIC;
+signal adder2_result : STD_LOGIC_VECTOR(input_width downto 0);
+
+-- Control signals
+signal u_is_even, v_is_even : STD_LOGIC;
+signal x1_is_even, x2_is_even : STD_LOGIC;
+signal u_geq_v : STD_LOGIC;
+
 begin
 
 -------------------------------------------------------------------------------------------------
 -- MAPPING
 -------------------------------------------------------------------------------------------------
 
--- IP_ADDER
--- IP_adder : adder
--- generic map(
---     input_width => input_width,
--- );
--- port map(
---     a     => ,
---     b     => ,
---     neg_b => ,      
---     s     =>
--- );
+-- Main adder for u/v operations
+main_adder : adder
+generic map(
+    input_width => input_width
+)
+port map(
+    a     => adder1_a,
+    b     => adder1_b,
+    neg_b => adder1_neg_b,      
+    s     => adder1_result
+);
+
+-- Secondary adder for x1/x2 operations
+x_adder : adder
+generic map(
+    input_width => input_width
+)
+port map(
+    a     => adder2_a,
+    b     => adder2_b,
+    neg_b => adder2_neg_b,      
+    s     => adder2_result
+);
 
 -------------------------------------------------------------------------------------------------
--- PROCESS
+-- COMBINATIONAL LOGIC
 -------------------------------------------------------------------------------------------------
 
-----------------------------------------------------------------------------------
-	-- Please implement your logic and FSM solution here
-	-- Instantiate the adder(s) instead of using STD NUMERIC
-----------------------------------------------------------------------------------
+-- Even/odd checks
+u_is_even <= '1' when reg_u(0) = '0' else '0';
+v_is_even <= '1' when reg_v(0) = '0' else '0';
+x1_is_even <= '1' when reg_x1(0) = '0' else '0';
+x2_is_even <= '1' when reg_x2(0) = '0' else '0';
+
+-- Compare u >= v using the adder (subtraction)
+u_geq_v <= not adder1_result(input_width) when current_state = COMPARE_UV else '0';
+
+-------------------------------------------------------------------------------------------------
+-- SEQUENTIAL LOGIC
+-------------------------------------------------------------------------------------------------
+
+-- State register process
+process(clk, reset)
+begin
+    if reset = '1' then
+        current_state <= IDLE;
+        reg_u <= (others => '0');
+        reg_v <= (others => '0');
+        reg_x1 <= (others => '0');
+        reg_x2 <= (others => '0');
+        done <= '0';
+        inverse <= (others => '0');
+    elsif rising_edge(clk) then
+        current_state <= next_state;
+        
+        case current_state is
+            when IDLE =>
+                if input_r = '1' then
+                    reg_u <= u;
+                    reg_v <= v;
+                    reg_x1 <= (0 => '1', others => '0');  -- x1 = 1
+                    reg_x2 <= (others => '0');            -- x2 = 0
+                    done <= '0';
+                end if;
+                
+            when CHECK_U_EVEN =>
+                if u_is_even = '1' then
+                    reg_u <= '0' & reg_u(input_width-1 downto 1);  -- u = u/2
+                    if x1_is_even = '1' then
+                        reg_x1 <= '0' & reg_x1(input_width-1 downto 1);  -- x1 = x1/2
+                    else
+                        reg_x1 <= adder2_result(input_width-1 downto 0);  -- x1 = (x1 + p)/2
+                    end if;
+                end if;
+                
+            when CHECK_V_EVEN =>
+                if v_is_even = '1' then
+                    reg_v <= '0' & reg_v(input_width-1 downto 1);  -- v = v/2
+                    if x2_is_even = '1' then
+                        reg_x2 <= '0' & reg_x2(input_width-1 downto 1);  -- x2 = x2/2
+                    else
+                        reg_x2 <= adder2_result(input_width-1 downto 0);  -- x2 = (x2 + p)/2
+                    end if;
+                end if;
+                
+            when UPDATE_U =>
+                reg_u <= adder1_result(input_width-1 downto 0);    -- u = u - v
+                reg_x1 <= adder2_result(input_width-1 downto 0);   -- x1 = x1 - x2
+                
+            when UPDATE_V =>
+                reg_v <= adder1_result(input_width-1 downto 0);    -- v = v - u
+                reg_x2 <= adder2_result(input_width-1 downto 0);   -- x2 = x2 - x1
+                
+            when DONE_STATE =>
+                done <= '1';
+                if reg_u = std_logic_vector(to_unsigned(1, input_width)) then
+                    inverse <= reg_x1;
+                else
+                    inverse <= reg_x2;
+                end if;
+                
+            when others =>
+                null;
+        end case;
+    end if;
+end process;
+
+-- Next state logic
+process(current_state, input_r, u_is_even, v_is_even, u_geq_v, reg_u, reg_v)
+begin
+    -- Default assignments
+    next_state <= current_state;
+    adder1_a <= reg_u;
+    adder1_b <= reg_v;
+    adder1_neg_b <= '0';
+    adder2_a <= reg_x1;
+    adder2_b <= reg_x2;
+    adder2_neg_b <= '0';
+    
+    case current_state is
+        when IDLE =>
+            if input_r = '1' then
+                next_state <= CHECK_U_EVEN;
+            end if;
+            
+        when CHECK_U_EVEN =>
+            if u_is_even = '1' then
+                -- Setup for (x1 + p)/2 calculation if needed
+                if not x1_is_even then
+                    adder2_a <= reg_x1;
+                    adder2_b <= v;  -- v is p in our case
+                    adder2_neg_b <= '0';
+                end if;
+                next_state <= CHECK_U_EVEN;  -- Stay to keep dividing by 2
+            else
+                next_state <= CHECK_V_EVEN;
+            end if;
+            
+        when CHECK_V_EVEN =>
+            if v_is_even = '1' then
+                -- Setup for (x2 + p)/2 calculation if needed
+                if not x2_is_even then
+                    adder2_a <= reg_x2;
+                    adder2_b <= v;  -- v is p in our case
+                    adder2_neg_b <= '0';
+                end if;
+                next_state <= CHECK_V_EVEN;  -- Stay to keep dividing by 2
+            else
+                next_state <= COMPARE_UV;
+            end if;
+            
+        when COMPARE_UV =>
+            -- Setup for u - v comparison
+            adder1_a <= reg_u;
+            adder1_b <= reg_v;
+            adder1_neg_b <= '1';
+            
+            if reg_u = std_logic_vector(to_unsigned(1, input_width)) or 
+               reg_v = std_logic_vector(to_unsigned(1, input_width)) then
+                next_state <= DONE_STATE;
+            else
+                next_state <= UPDATE_U when u_geq_v = '1' else UPDATE_V;
+            end if;
+            
+        when UPDATE_U =>
+            -- Setup for u = u - v
+            adder1_a <= reg_u;
+            adder1_b <= reg_v;
+            adder1_neg_b <= '1';
+            -- Setup for x1 = x1 - x2
+            adder2_a <= reg_x1;
+            adder2_b <= reg_x2;
+            adder2_neg_b <= '1';
+            next_state <= CHECK_U_EVEN;
+            
+        when UPDATE_V =>
+            -- Setup for v = v - u
+            adder1_a <= reg_v;
+            adder1_b <= reg_u;
+            adder1_neg_b <= '1';
+            -- Setup for x2 = x2 - x1
+            adder2_a <= reg_x2;
+            adder2_b <= reg_x1;
+            adder2_neg_b <= '1';
+            next_state <= CHECK_V_EVEN;
+            
+        when DONE_STATE =>
+            next_state <= IDLE;
+            
+    end case;
+end process;
 
 end Behavioral;
