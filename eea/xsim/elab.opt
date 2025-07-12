@@ -1,0 +1,1 @@
+--incr --debug typical --relax --mt 2  -L xil_defaultlib -L secureip -L xpm --snapshot field_inverse_eea_tb xil_defaultlib.field_inverse_eea_tb -log elaborate.log

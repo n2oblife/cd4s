@@ -5,24 +5,4 @@ Running: C:/Xilinx/Vivado/2024.2/bin/unwrapped/win64.o/xelab.exe --incr --debug 
 Using 2 slave threads.
 Starting static elaboration
 Completed static elaboration
-Starting simulation data flow analysis
-Completed simulation data flow analysis
-Time Resolution for simulation is 1ps
-Compiling package std.standard
-Compiling package std.textio
-Compiling package ieee.std_logic_1164
-Compiling package xil_defaultlib.common
-Compiling package ieee.numeric_std
-Compiling package ieee.math_real
-Compiling architecture behavioral of entity xil_defaultlib.SBox [sbox_default]
-Compiling architecture behavioral of entity xil_defaultlib.ParallelSBox [parallelsbox_default]
-Compiling architecture behavioral of entity xil_defaultlib.Rotate [\Rotate(c1=19,c2=28)\]
-Compiling architecture behavioral of entity xil_defaultlib.Rotate [\Rotate(c1=61,c2=39)\]
-Compiling architecture behavioral of entity xil_defaultlib.Rotate [\Rotate(c1=1,c2=6)\]
-Compiling architecture behavioral of entity xil_defaultlib.Rotate [\Rotate(c1=10,c2=17)\]
-Compiling architecture behavioral of entity xil_defaultlib.Rotate [\Rotate(c1=7,c2=41)\]
-Compiling architecture behavioral of entity xil_defaultlib.ParallelRotate [parallelrotate_default]
-Compiling architecture behavioral of entity xil_defaultlib.FSM [fsm_default]
-Compiling architecture behavioral of entity xil_defaultlib.ASCON [ascon_default]
-Compiling architecture behavioral of entity xil_defaultlib.testbench
-Built simulation snapshot testbench_behav
+INFO: [XSIM 43-4323] No Change in HDL. Linking previously generated obj files to create kernel

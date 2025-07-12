@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="field_inverse_eea_tb_behav.wdb" id="1">
+         <top_modules>
+            <top_module name="field_inverse_eea_tb" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="0.000 ns"></ZoomStartTime>
+      <ZoomEndTime time="1,000.001 ns"></ZoomEndTime>
+      <Cursor1Time time="46.392 ns"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="167"></NameColumnWidth>
+      <ValueColumnWidth column_width="88"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="38" />
+   <wvobject fp_name="/field_inverse_eea_tb/u" type="array">
+      <obj_property name="ElementShortName">u[63:0]</obj_property>
+      <obj_property name="ObjectShortName">u[63:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/field_inverse_eea_tb/v" type="array">
+      <obj_property name="ElementShortName">v[63:0]</obj_property>
+      <obj_property name="ObjectShortName">v[63:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/field_inverse_eea_tb/inverse" type="array">
+      <obj_property name="ElementShortName">inverse[63:0]</obj_property>
+      <obj_property name="ObjectShortName">inverse[63:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/field_inverse_eea_tb/CLK" type="logic">
+      <obj_property name="ElementShortName">CLK</obj_property>
+      <obj_property name="ObjectShortName">CLK</obj_property>
+   </wvobject>
+   <wvobject fp_name="/field_inverse_eea_tb/RST" type="logic">
+      <obj_property name="ElementShortName">RST</obj_property>
+      <obj_property name="ObjectShortName">RST</obj_property>
+   </wvobject>
+   <wvobject fp_name="/field_inverse_eea_tb/DONE" type="logic">
+      <obj_property name="ElementShortName">DONE</obj_property>
+      <obj_property name="ObjectShortName">DONE</obj_property>
+   </wvobject>
+   <wvobject fp_name="/field_inverse_eea_tb/input_r" type="logic">
+      <obj_property name="ElementShortName">input_r</obj_property>
+      <obj_property name="ObjectShortName">input_r</obj_property>
+   </wvobject>
+   <wvobject fp_name="/field_inverse_eea_tb/period" type="other">
+      <obj_property name="ElementShortName">period</obj_property>
+      <obj_property name="ObjectShortName">period</obj_property>
+   </wvobject>
+   <wvobject fp_name="/field_inverse_eea_tb/uut/clk" type="logic">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject fp_name="/field_inverse_eea_tb/uut/reset" type="logic">
+      <obj_property name="ElementShortName">reset</obj_property>
+      <obj_property name="ObjectShortName">reset</obj_property>
+   </wvobject>
+   <wvobject fp_name="/field_inverse_eea_tb/uut/input_r" type="logic">
+      <obj_property name="ElementShortName">input_r</obj_property>
+      <obj_property name="ObjectShortName">input_r</obj_property>
+   </wvobject>
+   <wvobject fp_name="/field_inverse_eea_tb/uut/u" type="array">
+      <obj_property name="ElementShortName">u[63:0]</obj_property>
+      <obj_property name="ObjectShortName">u[63:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/field_inverse_eea_tb/uut/v" type="array">
+      <obj_property name="ElementShortName">v[63:0]</obj_property>
+      <obj_property name="ObjectShortName">v[63:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/field_inverse_eea_tb/uut/done" type="logic">
+      <obj_property name="ElementShortName">done</obj_property>
+      <obj_property name="ObjectShortName">done</obj_property>
+   </wvobject>
+   <wvobject fp_name="/field_inverse_eea_tb/uut/inverse" type="array">
+      <obj_property name="ElementShortName">inverse[63:0]</obj_property>
+      <obj_property name="ObjectShortName">inverse[63:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/field_inverse_eea_tb/uut/current_state" type="other">
+      <obj_property name="ElementShortName">current_state</obj_property>
+      <obj_property name="ObjectShortName">current_state</obj_property>
+   </wvobject>
+   <wvobject fp_name="/field_inverse_eea_tb/uut/next_state" type="other">
+      <obj_property name="ElementShortName">next_state</obj_property>
+      <obj_property name="ObjectShortName">next_state</obj_property>
+   </wvobject>
+   <wvobject fp_name="/field_inverse_eea_tb/uut/reg_u" type="array">
+      <obj_property name="ElementShortName">reg_u[63:0]</obj_property>
+      <obj_property name="ObjectShortName">reg_u[63:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/field_inverse_eea_tb/uut/reg_v" type="array">
+      <obj_property name="ElementShortName">reg_v[63:0]</obj_property>
+      <obj_property name="ObjectShortName">reg_v[63:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/field_inverse_eea_tb/uut/reg_x1" type="array">
+      <obj_property name="ElementShortName">reg_x1[63:0]</obj_property>
+      <obj_property name="ObjectShortName">reg_x1[63:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/field_inverse_eea_tb/uut/reg_x2" type="array">
+      <obj_property name="ElementShortName">reg_x2[63:0]</obj_property>
+      <obj_property name="ObjectShortName">reg_x2[63:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/field_inverse_eea_tb/uut/adder1_a" type="array">
+      <obj_property name="ElementShortName">adder1_a[63:0]</obj_property>
+      <obj_property name="ObjectShortName">adder1_a[63:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/field_inverse_eea_tb/uut/adder1_b" type="array">
+      <obj_property name="ElementShortName">adder1_b[63:0]</obj_property>
+      <obj_property name="ObjectShortName">adder1_b[63:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/field_inverse_eea_tb/uut/adder1_neg_b" type="logic">
+      <obj_property name="ElementShortName">adder1_neg_b</obj_property>
+      <obj_property name="ObjectShortName">adder1_neg_b</obj_property>
+   </wvobject>
+   <wvobject fp_name="/field_inverse_eea_tb/uut/adder1_result" type="array">
+      <obj_property name="ElementShortName">adder1_result[64:0]</obj_property>
+      <obj_property name="ObjectShortName">adder1_result[64:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/field_inverse_eea_tb/uut/adder2_a" type="array">
+      <obj_property name="ElementShortName">adder2_a[63:0]</obj_property>
+      <obj_property name="ObjectShortName">adder2_a[63:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/field_inverse_eea_tb/uut/adder2_b" type="array">
+      <obj_property name="ElementShortName">adder2_b[63:0]</obj_property>
+      <obj_property name="ObjectShortName">adder2_b[63:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/field_inverse_eea_tb/uut/adder2_neg_b" type="logic">
+      <obj_property name="ElementShortName">adder2_neg_b</obj_property>
+      <obj_property name="ObjectShortName">adder2_neg_b</obj_property>
+   </wvobject>
+   <wvobject fp_name="/field_inverse_eea_tb/uut/adder2_result" type="array">
+      <obj_property name="ElementShortName">adder2_result[64:0]</obj_property>
+      <obj_property name="ObjectShortName">adder2_result[64:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/field_inverse_eea_tb/uut/u_is_even" type="logic">
+      <obj_property name="ElementShortName">u_is_even</obj_property>
+      <obj_property name="ObjectShortName">u_is_even</obj_property>
+   </wvobject>
+   <wvobject fp_name="/field_inverse_eea_tb/uut/v_is_even" type="logic">
+      <obj_property name="ElementShortName">v_is_even</obj_property>
+      <obj_property name="ObjectShortName">v_is_even</obj_property>
+   </wvobject>
+   <wvobject fp_name="/field_inverse_eea_tb/uut/x1_is_even" type="logic">
+      <obj_property name="ElementShortName">x1_is_even</obj_property>
+      <obj_property name="ObjectShortName">x1_is_even</obj_property>
+   </wvobject>
+   <wvobject fp_name="/field_inverse_eea_tb/uut/x2_is_even" type="logic">
+      <obj_property name="ElementShortName">x2_is_even</obj_property>
+      <obj_property name="ObjectShortName">x2_is_even</obj_property>
+   </wvobject>
+   <wvobject fp_name="/field_inverse_eea_tb/uut/u_geq_v" type="logic">
+      <obj_property name="ElementShortName">u_geq_v</obj_property>
+      <obj_property name="ObjectShortName">u_geq_v</obj_property>
+   </wvobject>
+   <wvobject fp_name="/field_inverse_eea_tb/uut/u_is_one" type="logic">
+      <obj_property name="ElementShortName">u_is_one</obj_property>
+      <obj_property name="ObjectShortName">u_is_one</obj_property>
+   </wvobject>
+   <wvobject fp_name="/field_inverse_eea_tb/uut/v_is_one" type="logic">
+      <obj_property name="ElementShortName">v_is_one</obj_property>
+      <obj_property name="ObjectShortName">v_is_one</obj_property>
+   </wvobject>
+   <wvobject fp_name="/field_inverse_eea_tb/uut/input_width" type="other">
+      <obj_property name="ElementShortName">input_width</obj_property>
+      <obj_property name="ObjectShortName">input_width</obj_property>
+   </wvobject>
+   <wvobject fp_name="/field_inverse_eea_tb/uut/ONE" type="array">
+      <obj_property name="ElementShortName">ONE[63:0]</obj_property>
+      <obj_property name="ObjectShortName">ONE[63:0]</obj_property>
+   </wvobject>
+</wave_config>

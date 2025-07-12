@@ -1,6 +1,17 @@
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 
+-------------------------------------------------------------------------------------------------
+-- FUNCTIONS
+-------------------------------------------------------------------------------------------------
+-- Function to check if a std_logic_vector equals 1
+-- function is_one(signal vec : std_logic_vector) return boolean is
+-- begin
+--     return vec(0) = '1' and vec(vec'high downto 1) = (vec'high downto 1 => '0');
+-- end function is_one;
+
+-- Alternative approach: Use constant ONE for comparison
+-- if reg_u = ONE then
 
 -------------------------------------------------------------------------------------------------
 -- ENTITY
@@ -51,6 +62,9 @@ end component adder;
 type state_type is (IDLE, CHECK_U_EVEN, CHECK_V_EVEN, COMPARE_UV, UPDATE_U, UPDATE_V, DONE_STATE);
 signal current_state, next_state : state_type;
 
+-- Constants
+constant ONE : STD_LOGIC_VECTOR(input_width-1 downto 0) := (0 => '1', others => '0');
+
 -- Main algorithm variables
 signal reg_u, reg_v : STD_LOGIC_VECTOR(input_width-1 downto 0);
 signal reg_x1, reg_x2 : STD_LOGIC_VECTOR(input_width-1 downto 0);
@@ -68,6 +82,7 @@ signal adder2_result : STD_LOGIC_VECTOR(input_width downto 0);
 signal u_is_even, v_is_even : STD_LOGIC;
 signal x1_is_even, x2_is_even : STD_LOGIC;
 signal u_geq_v : STD_LOGIC;
+signal u_is_one, v_is_one : STD_LOGIC;
 
 begin
 
@@ -108,6 +123,10 @@ u_is_even <= '1' when reg_u(0) = '0' else '0';
 v_is_even <= '1' when reg_v(0) = '0' else '0';
 x1_is_even <= '1' when reg_x1(0) = '0' else '0';
 x2_is_even <= '1' when reg_x2(0) = '0' else '0';
+
+-- Check if equals 1
+u_is_one <= '1' when reg_u = ONE else '0';
+v_is_one <= '1' when reg_v = ONE else '0';
 
 -- Compare u >= v using the adder (subtraction)
 u_geq_v <= not adder1_result(input_width) when current_state = COMPARE_UV else '0';
@@ -170,7 +189,7 @@ begin
                 
             when DONE_STATE =>
                 done <= '1';
-                if reg_u = std_logic_vector(to_unsigned(1, input_width)) then
+                if reg_u = ONE then
                     inverse <= reg_x1;
                 else
                     inverse <= reg_x2;
@@ -232,12 +251,19 @@ begin
             adder1_b <= reg_v;
             adder1_neg_b <= '1';
             
-            if reg_u = std_logic_vector(to_unsigned(1, input_width)) or 
-               reg_v = std_logic_vector(to_unsigned(1, input_width)) then
+            -- if is_one(reg_u) or is_one(reg_v) then
+            if reg_u = ONE or reg_v = ONE then
                 next_state <= DONE_STATE;
             else
                 next_state <= UPDATE_U when u_geq_v = '1' else UPDATE_V;
             end if;
+            
+            -- Alternative using combinational signals:
+            -- if u_is_one = '1' or v_is_one = '1' then
+            --     next_state <= DONE_STATE;
+            -- else
+            --     next_state <= UPDATE_U when u_geq_v = '1' else UPDATE_V;
+            -- end if;
             
         when UPDATE_U =>
             -- Setup for u = u - v
